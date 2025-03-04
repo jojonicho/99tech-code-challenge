@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ninetech-server
+  name: ninetech-server-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ninetech-server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ninetech-server
+    spec:
+      containers:
+        - env:
+            - name: PORT
+              value: "8080"
+            - name: DB_HOST
+              value: ninetech-db-service
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "ninetech"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+          image: jojonicho/node-ninetech-server:latest
+          name: ninetech-server
+          ports:
+            - containerPort: 8080
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ninetech-server
+  name: ninetech-server-service
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  selector:
+    app: ninetech-server
+status:
+  loadBalancer: {}
