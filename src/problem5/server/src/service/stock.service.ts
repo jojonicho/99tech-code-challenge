@@ -1,11 +1,5 @@
-// create
-// list
-// get detail
-// update
-// delete 
-
-import { Stock } from '../entity/stock.entity';
-import { StockRepository } from '../repository/stock.repository';
+import { Stock } from "../entity/stock.entity";
+import { StockRepository } from "../repository/stock.repository";
 
 export class StockService {
   private stockRepository: StockRepository;
@@ -26,7 +20,10 @@ export class StockService {
     return await this.stockRepository.findById(id);
   }
 
-  async updateStock(id: string, stockData: Partial<Stock>): Promise<Stock | null> {
+  async updateStock(
+    id: string,
+    stockData: Partial<Stock>,
+  ): Promise<Stock | null> {
     return await this.stockRepository.update(id, stockData);
   }
 
@@ -37,13 +34,13 @@ export class StockService {
   // Ideally done as a cron job
   async updateAllPrices(): Promise<void> {
     const stocks = await this.stockRepository.findAll();
-    
+
     for (const stock of stocks) {
       // Substitute for API call with random price between $1-1000
       const newPrice = +(Math.random() * 999 + 1).toFixed(2);
-      
+
       await this.stockRepository.update(stock.id, {
-        currentPrice: newPrice
+        currentPrice: newPrice,
       });
     }
   }
